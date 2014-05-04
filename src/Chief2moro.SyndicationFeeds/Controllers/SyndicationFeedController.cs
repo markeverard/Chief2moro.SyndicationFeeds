@@ -65,7 +65,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             var contentItem = ContentLoader.Get<IContent>(contentReference);
 
             var model = new ContentHolderModel { Tag = currentPage.BlockRenderingTag, ContentArea = contentArea, Content = contentItem};
-            return View(model);
+            return View("~/modules/Chief2moro.SyndicationFeed/Views/Item.cshtml", model);
         }
     }
 }

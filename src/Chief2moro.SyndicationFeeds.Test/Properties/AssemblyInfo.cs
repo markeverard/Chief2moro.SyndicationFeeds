@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Chief2moro.SyndicationFeeds")]
+[assembly: AssemblyTitle("Chief2moro.SyndicationFeeds.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Chief2moro")]
-[assembly: AssemblyProduct("Chief2moro.SyndicationFeeds")]
-[assembly: AssemblyCopyright("Copyright © Chief2moro 2014")]
+[assembly: AssemblyCompany("Marie Curie")]
+[assembly: AssemblyProduct("Chief2moro.SyndicationFeeds.Test")]
+[assembly: AssemblyCopyright("Copyright © Marie Curie 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("cf0c1a52-4f40-4f27-bf9e-e57f8f6588d2")]
+[assembly: Guid("543628d1-5601-49a7-98b2-cf2006fdadc9")]
 
 // Version information for an assembly consists of the following four values:
 //

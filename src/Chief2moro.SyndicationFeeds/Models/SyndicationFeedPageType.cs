@@ -10,7 +10,8 @@ namespace Chief2moro.SyndicationFeeds.Models
 {
     [ContentType(DisplayName = "Syndication Feed", 
         GUID = "7082c0ee-1efa-4f60-ad7f-735f45c42689", 
-        Description = "A page displaying a syndication feed of the selected content items in RSS or ATOM feed format")]
+        Description = "A page displaying a feed of the selected content items in RSS or ATOM feed format")]
+    [ImageUrl("~/modules/Chief2moro.SyndicationFeed/Images/syndicationfeedpagetype-icon.png")]
     public class SyndicationFeedPageType : PageData
     {
         [Display(
@@ -19,20 +20,29 @@ namespace Chief2moro.SyndicationFeeds.Models
             GroupName = SystemTabNames.Content,
             Order = 4)]
        [UIHint(UIHint.Textarea)]
+        [Required]
        public virtual string Description { get; set; }
+
+        [Display(
+            Name = "Call-to-action",
+            Description = "A call to action displayed when the page is used within a content area.",
+            GroupName = SystemTabNames.Content,
+            Order = 5)]
+        [Required]
+        public virtual string CallToAction { get; set; }
         
         [Display(
             Name = "Feed format",
             Description = "Select the output format for the content feed",
             GroupName = SystemTabNames.Content,
-            Order = 5)]
+            Order = 6)]
         [BackingType(typeof(PropertyNumber))]
         [EditorDescriptor(EditorDescriptorType = typeof(EnumEditorDescriptor<FeedFormat>))]
         public virtual FeedFormat FeedFormat { get; set; }
         
         [Display(
             Name = "Content items",
-            Description = "Any content item added to this content area will be displyed in the feed",
+            Description = "Any content items added to this content area will be displyed in the feed",
             GroupName = SystemTabNames.Content,
             Order = 10)]
         public virtual ContentArea ContentItems { get; set; }
@@ -62,7 +72,7 @@ namespace Chief2moro.SyndicationFeeds.Models
 
         [Display(
             Name = "Maximum items in feed",
-            Description = "Sets the maximum number of itesm to display in the syndication feed",
+            Description = "Sets the maximum number of items to display in the syndication feed",
             GroupName = SystemTabNames.Content,
             Order = 40)]
         [Range(0, int.MaxValue)]
