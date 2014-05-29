@@ -8,7 +8,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
     {
         public override ActionResult Index(SyndicationFeedPageType currentContent)
         {
-            return PartialView("~/modules/Chief2moro.SyndicationFeed/Views/Partial.cshtml", currentContent);
+            return PartialView("~/modules/Chief2moro.SyndicationFeeds/Views/Partial.cshtml", currentContent);
         }
     }
 }

@@ -66,6 +66,7 @@ namespace Chief2moro.SyndicationFeeds
             Uri url = GetItemUrl(content);
 
             item.Content = new UrlSyndicationContent(url, mimeType);
+            item.AddPermalink(url);
             item.Authors.Add(new SyndicationPerson(string.Empty, changedby, string.Empty));
 
             return item;

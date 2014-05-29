@@ -11,7 +11,7 @@ namespace Chief2moro.SyndicationFeeds.Models
     [ContentType(DisplayName = "Syndication Feed", 
         GUID = "7082c0ee-1efa-4f60-ad7f-735f45c42689", 
         Description = "A page displaying a feed of the selected content items in RSS or ATOM feed format")]
-    [ImageUrl("~/modules/Chief2moro.SyndicationFeed/Images/syndicationfeedpagetype-icon.png")]
+    [ImageUrl("~/modules/Chief2moro.SyndicationFeeds/Images/syndicationfeedpagetype-icon.png")]
     public class SyndicationFeedPageType : PageData
     {
         [Display(
