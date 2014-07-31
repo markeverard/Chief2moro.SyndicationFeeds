@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.ServiceModel.Syndication;
 using Chief2moro.SyndicationFeeds.Models;
 using EPiServer;
@@ -75,12 +76,17 @@ namespace Chief2moro.SyndicationFeeds
             var property = content.GetType().GetProperty(propertyName);
             if (property != null)
             {
-                return property.GetGetMethod().Invoke(content, new object[] {}).ToString();
+                var method = property.GetGetMethod();
+                if (method != null)
+                {
+                    var summary = method.Invoke(content, new object[] {});
+                    return summary != null ? summary.ToString() : content.Name;
+                }
             }
-            
+
             _log.Warn(string.Format("Property {0} not defined for syndication item {1} will return 'name' as summary, properties found: {2}",
                 propertyName, content,
-                string.Join(", ", content.GetType().GetProperties().Select(m => m.ToString()))));
+                string.Join(", ", content.GetType().GetProperties().Select(m => m.Name.Split(' ').Last()))));
 
             return content.Name;
         }
