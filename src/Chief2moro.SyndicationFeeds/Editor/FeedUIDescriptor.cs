@@ -8,7 +8,7 @@ namespace Chief2moro.SyndicationFeeds.Editor
     {  
         public FeedUIDescriptor()
         {
-            DefaultView = CmsViewNames.AllPropertiesView;
+            //DefaultView = CmsViewNames.AllPropertiesView;
         }
     } 
 }

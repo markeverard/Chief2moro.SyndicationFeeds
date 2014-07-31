@@ -11,8 +11,6 @@ namespace Chief2moro.SyndicationFeeds.Initialisation
     {
         public void Initialize(InitializationEngine context)
         {
-            FeedInformationHandler.SetDefaultBehaviour();
-
             var resolver = ServiceLocator.Current.GetInstance<TemplateResolver>();
             resolver.TemplateResolved += TemplateResolverOnTemplateResolved;
         }
