@@ -84,11 +84,11 @@ namespace Chief2moro.SyndicationFeeds
                 }
             }
 
-            _log.Warn(string.Format("Property {0} not defined for syndication item {1} will return 'name' as summary, properties found: {2}",
+            _log.Debug(string.Format("Property {0} not defined for syndication item {1} will return empty summary text so the item can be filtered out, properties found: {2}",
                 propertyName, content,
                 string.Join(", ", content.GetType().GetProperties().Select(m => m.Name.Split(' ').Last()))));
 
-            return content.Name;
+            return "";
         }
 
         private string GetMimeType(IContent content)
