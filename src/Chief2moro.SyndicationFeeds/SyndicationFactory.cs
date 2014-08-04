@@ -73,22 +73,16 @@ namespace Chief2moro.SyndicationFeeds
                 return content.Name;
             }
 
-            var property = content.GetType().GetProperty(propertyName);
-            if (property != null)
+            var pageData = content as PageData;
+
+            if (pageData == null)
             {
-                var method = property.GetGetMethod();
-                if (method != null)
-                {
-                    var summary = method.Invoke(content, new object[] {});
-                    return summary != null ? summary.ToString() : content.Name;
-                }
+                return "";
             }
 
-            _log.Debug(string.Format("Property {0} not defined for syndication item {1} will return empty summary text so the item can be filtered out, properties found: {2}",
-                propertyName, content,
-                string.Join(", ", content.GetType().GetProperties().Select(m => m.Name.Split(' ').Last()))));
+            var summary = pageData[propertyName];
 
-            return "";
+            return summary == null ? "" : summary.ToString();
         }
 
         private string GetMimeType(IContent content)
