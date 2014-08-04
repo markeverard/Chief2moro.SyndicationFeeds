@@ -20,7 +20,7 @@ namespace Chief2moro.SyndicationFeeds.Models
             GroupName = SystemTabNames.Content,
             Order = 4)]
        [UIHint(UIHint.Textarea)]
-        [Required]
+       [Required]
        public virtual string Description { get; set; }
 
         [Display(
@@ -41,6 +41,13 @@ namespace Chief2moro.SyndicationFeeds.Models
         public virtual FeedFormat FeedFormat { get; set; }
         
         [Display(
+            Name = "Order by created date",
+            Description = "If not checked, the feed is sorted by last updated time",
+            GroupName = SystemTabNames.Content,
+            Order = 7)]
+        public virtual bool OrderByCreatedDate { get; set; }
+        
+        [Display(
             Name = "Content items",
             Description = "Any content items added to this content area will be displyed in the feed",
             GroupName = SystemTabNames.Content,
@@ -54,12 +61,27 @@ namespace Chief2moro.SyndicationFeeds.Models
             Order = 20)]
         public virtual ContentReference PageFolder { get; set; }
 
+        [Display(
+            Name = "Page property used to retrieve summary text",
+            Description = "Will search for a property with this name, if not found will just set summary equal to title (both name of page)",
+            GroupName = SystemTabNames.Content,
+            Order = 25)]
+        public virtual string PropertyContainingSummary { get; set; }
+
+        [Display(
+            Name = "Check to include items with empty summary",
+            Description = "Summary is extracted based on logic described for 'page property for summary text'",
+            GroupName = SystemTabNames.Content,
+            Order = 26)]
+        public virtual bool IncludeItemsWithoutSummary { get; set; }
+
+
         [UIHint(UIHint.MediaFolder)]
         [Display(
             Name = "Media folder items",
             Description = "Selecting a media folder will add all media saved within that folder to the content feed",
             GroupName = SystemTabNames.Content,
-            Order = 21)]
+            Order = 28)]
         public virtual ContentReference MediaFolder { get; set; }
 
         [UIHint(UIHint.BlockFolder)]

@@ -11,24 +11,12 @@ namespace Chief2moro.SyndicationFeeds.Controllers
 {
     public class SyndicationFeedController : PageController<SyndicationFeedPageType>
     {
-        protected IContentLoader ContentLoader;
-        protected IFeedContentResolver FeedContentResolver;
-
-        public SyndicationFeedController()
-        {
-            ContentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
-            FeedContentResolver = ServiceLocator.Current.GetInstance<IFeedContentResolver>();
-        }
-
-        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver)
-        {
-            ContentLoader = contentLoader;
-            FeedContentResolver = feedContentResolver;
-        }
+        private readonly IContentLoader _contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
+        private readonly IFeedContentResolver _feedContentResolver = ServiceLocator.Current.GetInstance<IFeedContentResolver>();
 
         public ActionResult Index(SyndicationFeedPageType currentPage)
         {
-            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, currentPage);
+            var syndicationFactory = new SyndicationFactory(currentPage);
             
             var feed = new SyndicationFeed
             {
@@ -54,7 +42,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
 
             var contentReference = ContentReference.Parse(contentId.Value.ToString());
 
-            var referencedContent = FeedContentResolver.GetContentReferences(currentPage);
+            var referencedContent = _feedContentResolver.GetContentReferences(currentPage);
             if (!referencedContent.Contains(contentReference))
                 return HttpNotFound("Content Id not exposed in this feed");
             
@@ -62,7 +50,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             var item = new ContentAreaItem {ContentLink = contentReference};
             contentArea.Items.Add(item);
 
-            var contentItem = ContentLoader.Get<IContent>(contentReference);
+            var contentItem = _contentLoader.Get<IContent>(contentReference);
 
             var model = new ContentHolderModel { Tag = currentPage.BlockRenderingTag, ContentArea = contentArea, Content = contentItem};
             return View("~/modules/Chief2moro.SyndicationFeeds/Views/Item.cshtml", model);
