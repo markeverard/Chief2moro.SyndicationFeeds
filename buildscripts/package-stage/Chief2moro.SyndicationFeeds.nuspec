@@ -11,5 +11,11 @@
     <copyright>Copyright 2014</copyright>
     <summary>The Chief2moro SyndicationFeed package gives content editors the ability to create RSS /ATOM content feeds from content types stored in EPiServer.</summary>
     <tags>EPiServer 7.5 syndication feed rss atom</tags>
+    <dependencies>
+      <group targetFramework="net45">
+        <dependency id="Microsoft.AspNet.Razor" version="3.0.0" />
+        <dependency id="Microsoft.AspNet.Mvc" version="5.0.0" />
+      </group>
+    </dependencies>
   </metadata>
 </package>
