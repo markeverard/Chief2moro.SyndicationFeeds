@@ -12,28 +12,6 @@ namespace Chief2moro.SyndicationFeeds.Initialisation
         public void Initialize(InitializationEngine context)
         {
             FeedInformationHandler.SetDefaultBehaviour();
-
-            var resolver = ServiceLocator.Current.GetInstance<TemplateResolver>();
-            resolver.TemplateResolved += TemplateResolverOnTemplateResolved;
-        }
-
-        public static void TemplateResolverOnTemplateResolved(object sender, TemplateResolverEventArgs templateResolverEventArgs)
-        {
-            if (templateResolverEventArgs.ContentType == null)
-                return;
-            
-            if (templateResolverEventArgs.ContentType.ID != 26)
-                return;
-            
-            Debug.WriteLine(templateResolverEventArgs.ContentType);
-            Debug.WriteLine(templateResolverEventArgs.ItemToRender);
-
-            if (templateResolverEventArgs.SelectedTemplate == null)
-                return;
-
-            Debug.WriteLine(templateResolverEventArgs.SelectedTemplate.Name);
-            Debug.WriteLine(templateResolverEventArgs.SelectedTemplate.TemplateType);
-
         }
 
         public void Uninitialize(InitializationEngine context)

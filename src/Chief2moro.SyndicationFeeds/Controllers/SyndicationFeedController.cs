@@ -13,6 +13,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
     {
         protected IContentLoader ContentLoader;
         protected IFeedContentResolver FeedContentResolver;
+        protected IFeedContentFilterer FeedFilterer;
 
         public SyndicationFeedController()
         {
@@ -20,15 +21,16 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             FeedContentResolver = ServiceLocator.Current.GetInstance<IFeedContentResolver>();
         }
 
-        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver)
+        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver;
+            FeedFilterer = feedContentFilterer;
         }
 
         public ActionResult Index(SyndicationFeedPageType currentPage)
         {
-            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, currentPage);
+            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, currentPage);
             
             var feed = new SyndicationFeed
             {

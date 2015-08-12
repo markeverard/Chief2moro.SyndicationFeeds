@@ -5,6 +5,8 @@ using System.ServiceModel.Syndication;
 using Chief2moro.SyndicationFeeds.Models;
 using EPiServer;
 using EPiServer.Core;
+using EPiServer.DataAbstraction;
+using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 
@@ -14,12 +16,14 @@ namespace Chief2moro.SyndicationFeeds
     {
         protected IContentLoader ContentLoader;
         protected IFeedContentResolver FeedContentResolver;
+        protected IFeedContentFilterer FeedFilterer;
         protected SyndicationFeedPageType FeedPage;
       
-        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, SyndicationFeedPageType feedPage)
+        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, SyndicationFeedPageType feedPage)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver;
+            FeedFilterer = feedFilterer;
             FeedPage = feedPage;
         }
 
@@ -29,16 +33,12 @@ namespace Chief2moro.SyndicationFeeds
         /// <returns></returns>
         public IEnumerable<SyndicationItem> GetSyndicationItems()
         {
-            var dependentContentItems = FeedContentResolver.GetContentReferences(FeedPage);
-            var syndicationItems = dependentContentItems.Select(CreateItemFromReference).ToList();
+            var contentReferences = FeedContentResolver.GetContentReferences(FeedPage);
+            var contentItems = ContentLoader.GetItems(contentReferences, new LoaderOptions {LanguageLoaderOption.Fallback()});
+            var filteredItems = FeedFilterer.FilterSyndicationContent(contentItems, FeedPage);
+            var syndicationItems = filteredItems.Select(CreateSyndicationItem).ToList();
 
             return syndicationItems.OrderByDescending(c => c.LastUpdatedTime).Take(FeedPage.MaximumItems);
-        }
-
-        private SyndicationItem CreateItemFromReference(ContentReference contentReference)
-        {
-            var content = ContentLoader.Get<IContent>(contentReference);
-            return CreateSyndicationItem(content);
         }
 
         private SyndicationItem CreateSyndicationItem(IContent content)
@@ -52,7 +52,7 @@ namespace Chief2moro.SyndicationFeeds
                 changed = changeTrackable.Saved;
                 changedby = changeTrackable.ChangedBy;
             }
-            
+
             var item = new SyndicationItem
             {
                 Id = content.ContentLink.ID.ToString(),
@@ -61,7 +61,18 @@ namespace Chief2moro.SyndicationFeeds
                 PublishDate = changed,
                 LastUpdatedTime = changed,
             };
-            
+
+            var categorizable = content as ICategorizable;
+            if (categorizable != null)
+            {
+                foreach (var category in categorizable.Category)
+                {
+                    item.Categories.Add(new SyndicationCategory(Category.Find(category).Name));
+                    var test = ServiceLocator.Current.GetInstance<CategoryRepository>();
+                    item.Categories.Add(new SyndicationCategory(test.Get(category).Name));
+                }
+            }         
+
             var mimeType = GetMimeType(content);
             Uri url = GetItemUrl(content);
 

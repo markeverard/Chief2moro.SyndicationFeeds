@@ -13,18 +13,10 @@ namespace Chief2moro.SyndicationFeeds
             SetItemDescription = DefaultItemDescription;
         }
 
+        //To alter the logic in this method, you should create and assign a new function to the SetItemDescription delegate, within your own codebase.
         private static string DefaultItemDescription(IContent content)
         {
-            var description = content.Property["MetaDescription"];
-
-            if (description == null || string.IsNullOrWhiteSpace(description.ToString()))
-            {
-                description = description ?? content.Property["Description"];
-            }
-
-            return description != null && !string.IsNullOrWhiteSpace(description.ToString())
-                       ? description.ToString()
-                       : content.Name;
+            return string.Format("An src link to content with id = '{0}' and name = '{1}'", content.ContentLink.ID, content.Name);
         }
     }
 }

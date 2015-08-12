@@ -6,9 +6,6 @@ using EPiServer.Core;
 
 namespace Chief2moro.SyndicationFeeds
 {
-    /// <summary>
-    /// Responsible for collating all content references set on the given SyndicationFeedPage
-    /// </summary>
     public class FeedContentResolver : IFeedContentResolver
     {
         protected IContentLoader ContentLoader;
