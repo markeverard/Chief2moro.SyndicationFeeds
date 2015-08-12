@@ -23,7 +23,6 @@ namespace Chief2moro.SyndicationFeeds.Initialisation
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
             context.Container.Configure(x => x.For<IFeedContentResolver>().Use<FeedContentResolver>());
-            context.Container.Configure(x => x.For<IFeedContentFilterer>().Use<FeedContentFilterer>());
         }
     }
 }
