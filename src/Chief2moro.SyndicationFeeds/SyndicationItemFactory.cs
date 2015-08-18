@@ -55,23 +55,18 @@ namespace Chief2moro.SyndicationFeeds
 
             var item = new SyndicationItem
             {
-                Id = content.ContentLink.ID.ToString(),
                 Title = new TextSyndicationContent(content.Name),
                 Summary = new TextSyndicationContent(FeedInformationHandler.SetItemDescription(content)),
                 PublishDate = changed,
-                LastUpdatedTime = changed,
             };
 
             var categorizable = content as ICategorizable;
             if (categorizable != null)
             {
                 var categoryRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
-                
                 foreach (var category in categorizable.Category)
                 {
-                    item.Categories.Add(new SyndicationCategory(categoryRepository.Get(category).Name));
-                    var test = ServiceLocator.Current.GetInstance<CategoryRepository>();
-                    item.Categories.Add(new SyndicationCategory(test.Get(category).Name));
+                    item.Categories.Add(new SyndicationCategory(categoryRepository.Get(category).Description));
                 }
             }         
 

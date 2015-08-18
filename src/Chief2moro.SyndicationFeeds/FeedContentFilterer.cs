@@ -14,14 +14,14 @@ namespace Chief2moro.SyndicationFeeds
             var filteredItems = FilterForVisitor.Filter(syndicationContentItems);
 
             //filter editor set excluded types
-            var excludedPageTypeIds = ParseExcludedIds(feedPage.ExcludedPageTypes);
-            var excludedMediaTypeIds = ParseExcludedIds(feedPage.ExcludedMediaTypes);
-            var excludedBlockTypeIds = ParseExcludedIds(feedPage.ExcludedBlockTypes);
-            var excludedAllTypes = excludedPageTypeIds.Concat(excludedMediaTypeIds).Concat(excludedBlockTypeIds);
-
+            var excludedAllTypes = ParseExcludedIds(feedPage.ExcludedContentTypes);
+          
             filteredItems = filteredItems.Where(c => !excludedAllTypes.Contains(c.ContentTypeID));
 
             //filter by category
+            if (feedPage.CategoryFilter == null)
+                return filteredItems;
+
             if (!feedPage.CategoryFilter.IsEmpty)
             {
                 filteredItems = filteredItems

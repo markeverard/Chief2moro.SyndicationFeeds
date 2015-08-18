@@ -4,7 +4,7 @@
     {
         public const string Content = "Feed content";
         public const string Filters = "Filters";
-        public const string Settings = "Settings";
+        public const string FeedSettings = "Feed settings";
 
     }
 }

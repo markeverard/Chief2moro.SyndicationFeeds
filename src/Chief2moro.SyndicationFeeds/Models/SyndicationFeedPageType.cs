@@ -17,24 +17,24 @@ namespace Chief2moro.SyndicationFeeds.Models
         [Display(
             Name = "Description",
             Description = "A description of the content feed.",
-            GroupName = SystemTabNames.Content,
-            Order = 4)]
+            GroupName = FeedPageTypeTabNames.FeedSettings,
+            Order = 400)]
        [UIHint(UIHint.Textarea)]
         [Required]
        public virtual string Description { get; set; }
 
         [Display(
             Name = "Call-to-action",
-            Description = "A call to action displayed when the page is used within a content area.",
-            GroupName = SystemTabNames.Content,
-            Order = 5)]
+            Description = "A call to action displayed when the feed page is used within a content area.",
+            GroupName = FeedPageTypeTabNames.FeedSettings,
+            Order = 500)]
         [Required]
         public virtual string CallToAction { get; set; }
         
         [Display(
             Name = "Feed format",
             Description = "Select the output format for the content feed",
-            GroupName = FeedPageTypeTabNames.Settings,
+            GroupName = FeedPageTypeTabNames.FeedSettings,
             Order = 10)]
         [BackingType(typeof(PropertyNumber))]
         [EditorDescriptor(EditorDescriptorType = typeof(EnumEditorDescriptor<FeedFormat>))]
@@ -43,7 +43,7 @@ namespace Chief2moro.SyndicationFeeds.Models
         [Display(
           Name = "Maximum items in feed",
           Description = "Sets the maximum number of items to display in the syndication feed",
-          GroupName = FeedPageTypeTabNames.Settings,
+          GroupName = FeedPageTypeTabNames.FeedSettings,
           Order = 20)]
         [Range(0, int.MaxValue)]
         public virtual int MaximumItems { get; set; }
@@ -51,13 +51,13 @@ namespace Chief2moro.SyndicationFeeds.Models
         [Display(
            Name = "Block rendering tag",
            Description = "Sets the rendering tags for blocks accessed as child elements of this syndication feed",
-           GroupName = SystemTabNames.Settings,
+           GroupName = FeedPageTypeTabNames.FeedSettings,
            Order = 30)]
         public virtual string BlockRenderingTag { get; set; }
 
         [Display(
             Name = "Content items",
-            Description = "Any content items added to this content area will be displyed in the feed",
+            Description = "Any content items added to this content area will be displayed in the feed",
             GroupName = FeedPageTypeTabNames.Content,
             Order = 10)]
         public virtual ContentArea ContentItems { get; set; }
@@ -86,7 +86,7 @@ namespace Chief2moro.SyndicationFeeds.Models
         public virtual ContentReference BlockFolder { get; set; }
 
         [Display(
-            GroupName = SystemTabNames.Content, 
+            GroupName = FeedPageTypeTabNames.Filters, 
             Name = "Only display content items with selected categories",
             Description = "only content types that have categories matching this filter will be shown",
             Order = 10)]
@@ -94,24 +94,11 @@ namespace Chief2moro.SyndicationFeeds.Models
 
         [Display(
             GroupName = FeedPageTypeTabNames.Filters,
-            Name = "Exclude specified page types",
-            Description = "Selected page types will be filtered out from the feed",
+            Name = "Exclude specified content types",
+            Description = "Selected content types will be filtered out from the feed",
             Order = 20)]
-        public virtual string ExcludedPageTypes { get; set; }
-
-        [Display(
-            GroupName = FeedPageTypeTabNames.Filters,
-            Name = "Exclude specified media types",
-            Description = "Selected media types will be filtered out from the feed",
-            Order = 30)]
-        public virtual string ExcludedMediaTypes { get; set; }
-
-        [Display(
-            GroupName = FeedPageTypeTabNames.Filters,
-            Name = "Exclude specified block types",
-            Description = "Selected block types will be filtered out from the feed",
-            Order = 30)]
-        public virtual string ExcludedBlockTypes { get; set; }
+        [SelectMany(SelectionFactoryType = typeof(ContentTypeSelectionFactory))]
+        public virtual string ExcludedContentTypes { get; set; }
 
         public override void SetDefaultValues(ContentType contentType)
         {

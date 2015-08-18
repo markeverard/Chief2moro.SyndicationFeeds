@@ -4,8 +4,11 @@ using System.Web.Mvc;
 using Chief2moro.SyndicationFeeds.Models;
 using EPiServer;
 using EPiServer.Core;
+using EPiServer.DataAbstraction;
 using EPiServer.ServiceLocation;
+using EPiServer.Web;
 using EPiServer.Web.Mvc;
+using EPiServer.Web.Routing;
 
 namespace Chief2moro.SyndicationFeeds.Controllers
 {
@@ -35,13 +38,24 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             var feed = new SyndicationFeed
             {
                 Items = syndicationFactory.GetSyndicationItems(),
-                Id = currentPage.ContentGuid.ToString(),
+                Id = SiteDefinition.Current.SiteUrl.ToString().TrimEnd('/') + UrlResolver.Current.GetUrl(ContentReference.StartPage),         
                 Title = new TextSyndicationContent(currentPage.PageName),
                 Description = new TextSyndicationContent(currentPage.Description),
+                Language = currentPage.LanguageBranch,
+                Generator = "http://nuget.episerver.com/en/OtherPages/Package/?packageId=Chief2moro.SyndicationFeeds"
             };
 
+            if (currentPage.Category != null)
+            {
+                var categoryRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
+                foreach (var category in currentPage.Category)
+                {
+                    feed.Categories.Add(new SyndicationCategory(categoryRepository.Get(category).Description));
+                }
+            }
+
             if (feed.Items.Any())
-                feed.LastUpdatedTime = feed.Items.Max(m => m.LastUpdatedTime);
+                feed.LastUpdatedTime = feed.Items.Max(m => m.PublishDate);
 
             if (currentPage.FeedFormat == FeedFormat.Atom)
                 return new AtomActionResult(feed);
