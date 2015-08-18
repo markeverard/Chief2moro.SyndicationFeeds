@@ -26,7 +26,7 @@ namespace Chief2moro.SyndicationFeeds
         /// <param name="context">Accepts the current <see cref="ControllerContext"/>.</param>
         public override void ExecuteResult(ControllerContext context)
         {
-            context.HttpContext.Response.ContentType = "text/xml";
+            context.HttpContext.Response.ContentType = "application/rss+xml";
             var formatter = _feed.GetRss20Formatter();
 
             using (var writer = XmlWriter.Create(context.HttpContext.Response.Output))
