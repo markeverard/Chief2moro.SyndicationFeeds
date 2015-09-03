@@ -4,6 +4,8 @@ using System.Linq;
 using Chief2moro.SyndicationFeeds.Models;
 using EPiServer.Core;
 using EPiServer.Filters;
+using EPiServer.Security;
+using EPiServer.ServiceLocation;
 
 namespace Chief2moro.SyndicationFeeds
 {
@@ -16,21 +18,40 @@ namespace Chief2moro.SyndicationFeeds
             var filteredItems = syndicationContentItems.Where(c => !excludedAllTypes.Contains(c.ContentTypeID)).ToList();
 
             //filter by category
-            if (feedPage.CategoryFilter == null)
-                return filteredItems;
-
-            if (!feedPage.CategoryFilter.IsEmpty)
+            if (feedPage.CategoryFilter != null)
             {
-                filteredItems = filteredItems
-                    .Where(c => c is ICategorizable)
-                    .Where(c => ((ICategorizable)c).Category.MemberOfAny(feedPage.CategoryFilter)).ToList();
+                if (!feedPage.CategoryFilter.IsEmpty)
+                {
+                    filteredItems = filteredItems
+                        .Where(c => c is ICategorizable)
+                        .Where(c => ((ICategorizable) c).Category.MemberOfAny(feedPage.CategoryFilter)).ToList();
+                }
             }
 
             //block types are alkways removed by filter for visitor. We want to see them and respect access rights
-            var blockTypes = filteredItems.Where(c => c is BlockData);
-            new FilterContentForVisitor().Filter(filteredItems);
-            filteredItems.AddRange(blockTypes);
+            var currentlyFiltered = new IContent[filteredItems.Count];
+            filteredItems.CopyTo(currentlyFiltered);
             
+            //filter by published, access and template
+            var published = ServiceLocator.Current.GetInstance<IPublishedStateAssessor>();
+            var access = (IContentFilter) new FilterAccess();
+            var template = (IContentFilter) new FilterTemplate();
+
+            foreach (var filteredItem in currentlyFiltered)
+            {
+                var shouldFilter = false;
+
+                shouldFilter = access.ShouldFilter(filteredItem);
+                shouldFilter = shouldFilter || !published.IsPublished(filteredItem);
+
+                if (!(filteredItem is BlockData))
+                    shouldFilter = shouldFilter || template.ShouldFilter(filteredItem);
+                
+            
+                if (shouldFilter)
+                    filteredItems.Remove(filteredItem);
+            }
+           
             return filteredItems;
         }
 
