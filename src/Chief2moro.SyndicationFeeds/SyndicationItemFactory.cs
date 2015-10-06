@@ -22,8 +22,8 @@ namespace Chief2moro.SyndicationFeeds
         public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, SyndicationFeedPageType feedPage)
         {
             ContentLoader = contentLoader;
-            FeedContentResolver = feedContentResolver;
-            FeedFilterer = feedFilterer;
+            FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
+            FeedFilterer = feedFilterer ?? new FeedContentFilterer();
             FeedPage = feedPage;
         }
 
