@@ -17,23 +17,27 @@ namespace Chief2moro.SyndicationFeeds.Controllers
         protected IContentLoader ContentLoader;
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
+        protected IFeedDescriptionProvider FeedDescriptionProvider;
 
         public SyndicationFeedController()
         {
             ContentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
             FeedContentResolver = ServiceLocator.Current.GetInstance<IFeedContentResolver>();
+            FeedFilterer = ServiceLocator.Current.GetInstance<IFeedContentFilterer>();
+            FeedDescriptionProvider = ServiceLocator.Current.GetInstance<IFeedDescriptionProvider>();
         }
 
-        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer)
+        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer, IFeedDescriptionProvider feedDescriptionProvider)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver;
             FeedFilterer = feedContentFilterer;
+            FeedDescriptionProvider = feedDescriptionProvider;
         }
 
         public ActionResult Index(SyndicationFeedPageType currentPage)
         {
-            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, currentPage);
+            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, FeedDescriptionProvider, currentPage);
             
             var feed = new SyndicationFeed
             {

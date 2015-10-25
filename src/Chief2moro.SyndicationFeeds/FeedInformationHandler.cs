@@ -1,11 +1,14 @@
 ﻿using EPiServer.Core;
+using System;
 
 namespace Chief2moro.SyndicationFeeds
 {
     public delegate string SetItemDescription(IContent contentData);
-    
+
+    [Obsolete("Provide and register an implementation of IFeedDescriptionProvider to modify the item summary/description instead")]
     public static class FeedInformationHandler
     {
+        [Obsolete("Provide and register an implementation of IFeedDescriptionProvider to modify the item summary/description instead")]
         public static SetItemDescription SetItemDescription;
        
         public static void SetDefaultBehaviour()

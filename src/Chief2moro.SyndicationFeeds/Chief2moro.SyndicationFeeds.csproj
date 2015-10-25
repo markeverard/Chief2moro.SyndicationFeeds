@@ -173,8 +173,9 @@
     <Compile Include="Editor\FeedPageTypeTabNames.cs" />
     <Compile Include="FeedContentFilterer.cs" />
     <Compile Include="FeedContentResolver.cs" />
+    <Compile Include="FeedDescriptionProvider.cs" />
     <Compile Include="IFeedContentFilterer.cs" />
-    <Compile Include="Initialisation\FeedInitialization.cs" />
+    <Compile Include="IFeedDescriptionProvider.cs" />
     <Compile Include="FeedInformationHandler.cs" />
     <Compile Include="Editor\EnumEditorDescriptor.cs" />
     <Compile Include="Editor\EnumSelectionFactory%27T.cs" />

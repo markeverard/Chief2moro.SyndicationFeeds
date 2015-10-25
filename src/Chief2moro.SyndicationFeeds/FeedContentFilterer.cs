@@ -11,7 +11,7 @@ namespace Chief2moro.SyndicationFeeds
 {
     public class FeedContentFilterer : IFeedContentFilterer
     {
-        public IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedPageType feedPage)
+        public virtual IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedPageType feedPage)
         {
             //filter editor set excluded types
             var excludedAllTypes = ParseExcludedIds(feedPage.ExcludedContentTypes);

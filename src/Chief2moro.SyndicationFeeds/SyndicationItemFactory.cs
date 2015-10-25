@@ -17,13 +17,15 @@ namespace Chief2moro.SyndicationFeeds
         protected IContentLoader ContentLoader;
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
+        protected IFeedDescriptionProvider FeedDescriptionProvider;
         protected SyndicationFeedPageType FeedPage;
       
-        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, SyndicationFeedPageType feedPage)
+        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, IFeedDescriptionProvider feedDescriptionProvider, SyndicationFeedPageType feedPage)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
             FeedFilterer = feedFilterer ?? new FeedContentFilterer();
+            FeedDescriptionProvider = feedDescriptionProvider ?? new FeedDescriptionProvider();
             FeedPage = feedPage;
         }
 
@@ -56,7 +58,7 @@ namespace Chief2moro.SyndicationFeeds
             var item = new SyndicationItem
             {
                 Title = new TextSyndicationContent(content.Name),
-                Summary = new TextSyndicationContent(FeedInformationHandler.SetItemDescription(content)),
+                Summary = new TextSyndicationContent(FeedDescriptionProvider.ItemDescripton(content)),
                 PublishDate = changed,
             };
 

@@ -25,7 +25,7 @@ namespace Chief2moro.SyndicationFeeds.Editor
                     .Select(t => new SelectItem()
                     {
                         Text = !string.IsNullOrWhiteSpace(t.DisplayName) ? t.DisplayName : t.Name, 
-                        Value = t.ID
+                        Value = t.ID.ToString()
                     });
         }
     }
