@@ -9,6 +9,7 @@ using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Mvc;
 using EPiServer.Web.Routing;
+using System.Diagnostics;
 
 namespace Chief2moro.SyndicationFeeds.Controllers
 {
@@ -35,8 +36,14 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             FeedDescriptionProvider = feedDescriptionProvider;
         }
 
-        public ActionResult Index(SyndicationFeedPageType currentPage)
+        public ActionResult Index(SyndicationFeedPageType currentPage, string[] categories)
         {
+            if (categories != null)
+            {
+                foreach (var catId in categories)
+                    Debug.WriteLine(catId);
+            }
+
             var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, FeedDescriptionProvider, currentPage);
             
             var feed = new SyndicationFeed
