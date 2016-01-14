@@ -18,15 +18,15 @@ namespace Chief2moro.SyndicationFeeds
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
         protected IFeedDescriptionProvider FeedDescriptionProvider;
-        protected SyndicationFeedPageType FeedPage;
+        protected SyndicationFeedContext FeedContext;
       
-        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, IFeedDescriptionProvider feedDescriptionProvider, SyndicationFeedPageType feedPage)
+        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, IFeedDescriptionProvider feedDescriptionProvider, SyndicationFeedContext feedContext)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
             FeedFilterer = feedFilterer ?? new FeedContentFilterer();
             FeedDescriptionProvider = feedDescriptionProvider ?? new FeedDescriptionProvider();
-            FeedPage = feedPage;
+            FeedContext = feedContext;
         }
 
         /// <summary>
@@ -35,12 +35,12 @@ namespace Chief2moro.SyndicationFeeds
         /// <returns></returns>
         public IEnumerable<SyndicationItem> GetSyndicationItems()
         {
-            var contentReferences = FeedContentResolver.GetContentReferences(FeedPage);
+            var contentReferences = FeedContentResolver.GetContentReferences(FeedContext);
             var contentItems = ContentLoader.GetItems(contentReferences, new LoaderOptions {LanguageLoaderOption.Fallback()});
-            var filteredItems = FeedFilterer.FilterSyndicationContent(contentItems, FeedPage);
+            var filteredItems = FeedFilterer.FilterSyndicationContent(contentItems, FeedContext);
             var syndicationItems = filteredItems.Select(CreateSyndicationItem).ToList();
 
-            return syndicationItems.OrderByDescending(c => c.LastUpdatedTime).Take(FeedPage.MaximumItems);
+            return syndicationItems.OrderByDescending(c => c.LastUpdatedTime).Take(FeedContext.FeedPageType.MaximumItems);
         }
 
         private SyndicationItem CreateSyndicationItem(IContent content)
@@ -93,7 +93,7 @@ namespace Chief2moro.SyndicationFeeds
 
         private Uri GetItemUrl(IContent content)
         {
-            var feedPageUrl = UrlResolver.Current.GetUrl(FeedPage.ContentLink);
+            var feedPageUrl = UrlResolver.Current.GetUrl(FeedContext.FeedPageType.ContentLink);
 
             string contentUrl = content is BlockData
                 ? string.Format("{0}item?contentId={1}", feedPageUrl, content.ContentLink.ID)

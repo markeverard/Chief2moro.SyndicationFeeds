@@ -182,6 +182,7 @@
     <Compile Include="FeedFormat.cs" />
     <Compile Include="IFeedContentResolver.cs" />
     <Compile Include="Models\ContentHolderModel.cs" />
+    <Compile Include="Models\SyndicationFeedContext.cs" />
     <Compile Include="Models\SyndicationFeedPageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RssActionResult.cs" />

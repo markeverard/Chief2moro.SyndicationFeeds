@@ -11,20 +11,22 @@ namespace Chief2moro.SyndicationFeeds
 {
     public class FeedContentFilterer : IFeedContentFilterer
     {
-        public virtual IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedPageType feedPage)
+        public virtual IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedContext feedContext)
         {
             //filter editor set excluded types
+            var feedPage = feedContext.FeedPageType;
+
             var excludedAllTypes = ParseExcludedIds(feedPage.ExcludedContentTypes);
             var filteredItems = syndicationContentItems.Where(c => !excludedAllTypes.Contains(c.ContentTypeID)).ToList();
 
             //filter by category
-            if (feedPage.CategoryFilter != null)
+            if (feedContext.CategoriesFilter != null)
             {
-                if (!feedPage.CategoryFilter.IsEmpty)
+                if (!feedContext.CategoriesFilter.IsEmpty)
                 {
                     filteredItems = filteredItems
                         .Where(c => c is ICategorizable)
-                        .Where(c => ((ICategorizable) c).Category.MemberOfAny(feedPage.CategoryFilter)).ToList();
+                        .Where(c => ((ICategorizable) c).Category.MemberOfAll(feedContext.CategoriesFilter)).ToList();
                 }
             }
 
