@@ -18,5 +18,7 @@ Flexible ATOM/RSS feed creation for EPiServer CMS, with custom extension points 
 * Editors can filter content items that are shared via the following methods
   * Content items can be excluded by ContentType - allowing you to select a folder, but hide content items of a certain type
   * Filter via category.
+* Editors can set a cache limit to imporve performance of the syndication feed
+* Feeds can be filtered by category on request by passing a comma separated list of category names as a query string (?categories=one,two,three)
 * Blocks included in a feed are externally routed so their HTML output can be consumed by external systems.
 * Feed pages have a partial renderer meaning they can be dragged into Content Areas to display an RSS feed logo and link.
