@@ -9,8 +9,9 @@ using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Mvc;
 using EPiServer.Web.Routing;
-using System.Diagnostics;
 using System.Collections.Generic;
+using EPiServer.Framework.Cache;
+using System;
 
 namespace Chief2moro.SyndicationFeeds.Controllers
 {
@@ -40,17 +41,18 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             CatRepository = categoryRepository;
         }
 
-        [OutputCache(Duration = 60)]
         public ActionResult Index(SyndicationFeedPageType currentPage, string categories)
         {
             var parsedCategories = ParseCategories(categories);
             var feedContext = new SyndicationFeedContext(currentPage, parsedCategories.ToList());
-
+            
             var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, FeedDescriptionProvider, feedContext);
+
+            var items = GetFromCacheOrFactory(syndicationFactory, currentPage, parsedCategories);
             
             var feed = new SyndicationFeed
             {
-                Items = syndicationFactory.GetSyndicationItems(),
+                Items = items,
                 Id = SiteDefinition.Current.SiteUrl.ToString().TrimEnd('/') + UrlResolver.Current.GetUrl(ContentReference.StartPage),         
                 Title = new TextSyndicationContent(currentPage.PageName),
                 Description = new TextSyndicationContent(currentPage.Description),
@@ -111,5 +113,35 @@ namespace Chief2moro.SyndicationFeeds.Controllers
                 }
             }
         }
-     }
+        
+        private IEnumerable<SyndicationItem> GetFromCacheOrFactory(SyndicationItemFactory syndicationFactory, SyndicationFeedPageType currentPage, IEnumerable<Category> parsedCategories)
+        {
+            var cacheTime = currentPage.CacheFeedforSeconds;
+
+            string categoryQuery = string.Empty;
+            foreach (var category in parsedCategories)
+            {
+                categoryQuery += category.Name;
+            }
+
+            var cacheKey = string.Format("SyndicationFeedPageType_{0}_{1}", currentPage.ContentLink.ToString(), categoryQuery);
+
+            var cachedItems = CacheManager.Get(cacheKey) as IEnumerable<SyndicationItem>;
+            if (cachedItems == null)
+            {
+                cachedItems = syndicationFactory.GetSyndicationItems();
+
+                if (cacheTime > 0)
+                {
+                    var cachePolicy = new CacheEvictionPolicy(new[] { DataFactoryCache.PageCommonCacheKey(currentPage.ContentLink) }
+                                                            , new TimeSpan(0, 0, cacheTime),
+                                                            CacheTimeoutType.Absolute);
+
+                    CacheManager.Insert(cacheKey, syndicationFactory.GetSyndicationItems(), cachePolicy);
+                }
+            }
+
+            return cachedItems;
+        }
+    }
 }
