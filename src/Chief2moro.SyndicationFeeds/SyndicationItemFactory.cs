@@ -46,22 +46,31 @@ namespace Chief2moro.SyndicationFeeds
         private SyndicationItem CreateSyndicationItem(IContent content)
         {
             var changeTrackable = content as IChangeTrackable;
+            var versionable = content as IVersionable;
+
             var changed = DateTime.Now;
             var changedby = string.Empty;
-
+            
             if (changeTrackable != null)
             {
                 changed = changeTrackable.Saved;
                 changedby = changeTrackable.ChangedBy;
             }
-
+            
             var item = new SyndicationItem
             {
                 Title = new TextSyndicationContent(content.Name),
                 Summary = new TextSyndicationContent(FeedDescriptionProvider.ItemDescripton(content)),
-                PublishDate = changed,
+                LastUpdatedTime = changed
             };
 
+            if (versionable != null)
+            {
+                var published = versionable.StartPublish;
+                if (published.HasValue)
+                    item.PublishDate = published.Value;
+            }
+            
             var categorizable = content as ICategorizable;
             if (categorizable != null)
             {
@@ -78,7 +87,7 @@ namespace Chief2moro.SyndicationFeeds
             item.Content = new UrlSyndicationContent(url, mimeType);
             item.AddPermalink(url);
             item.Authors.Add(new SyndicationPerson(string.Empty, changedby, string.Empty));
-
+            
             return item;
         }
 

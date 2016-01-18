@@ -45,7 +45,10 @@ namespace Chief2moro.SyndicationFeeds.Controllers
         {
             var parsedCategories = ParseCategories(categories);
             var feedContext = new SyndicationFeedContext(currentPage, parsedCategories.ToList());
-            
+
+            var siteUrl = SiteDefinition.Current.SiteUrl.ToString().TrimEnd('/');
+            var currentUri = new Uri(siteUrl + UrlResolver.Current.GetUrl(currentPage.ContentLink));
+
             var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, FeedDescriptionProvider, feedContext);
 
             var items = GetFromCacheOrFactory(syndicationFactory, currentPage, parsedCategories);
@@ -53,13 +56,15 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             var feed = new SyndicationFeed
             {
                 Items = items,
-                Id = SiteDefinition.Current.SiteUrl.ToString().TrimEnd('/') + UrlResolver.Current.GetUrl(ContentReference.StartPage),         
+                Id = siteUrl + UrlResolver.Current.GetUrl(ContentReference.StartPage),         
                 Title = new TextSyndicationContent(currentPage.PageName),
                 Description = new TextSyndicationContent(currentPage.Description),
                 Language = currentPage.LanguageBranch,
                 Generator = "http://nuget.episerver.com/en/OtherPages/Package/?packageId=Chief2moro.SyndicationFeeds"
             };
 
+            feed.Links.Add(new SyndicationLink() { Uri = currentUri, RelationshipType = "self" });
+      
             if (currentPage.Category != null)
             {
                 var categoryRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
@@ -70,7 +75,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             }
 
             if (feed.Items.Any())
-                feed.LastUpdatedTime = feed.Items.Max(m => m.PublishDate);
+                feed.LastUpdatedTime = feed.Items.Max(m => m.LastUpdatedTime);
 
             if (currentPage.FeedFormat == FeedFormat.Atom)
                 return new AtomActionResult(feed);
