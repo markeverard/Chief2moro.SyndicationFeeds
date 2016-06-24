@@ -9,6 +9,6 @@ namespace Chief2moro.SyndicationFeeds
     /// </summary>
     public interface IFeedContentFilterer
     {
-        IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedPageType feedPage);
+        IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedContext feedContext);
     }
 }

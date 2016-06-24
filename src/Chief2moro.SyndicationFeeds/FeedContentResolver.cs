@@ -23,23 +23,25 @@ namespace Chief2moro.SyndicationFeeds
         /// </summary>
         /// <param name="currentPage">The current page.</param>
         /// <returns></returns>
-        public IEnumerable<ContentReference> GetContentReferences(SyndicationFeedPageType currentPage)
+        public IEnumerable<ContentReference> GetContentReferences(SyndicationFeedContext feedContext)
         {
+            var feedPage = feedContext.FeedPageType;
+
             var dependentContentItems = new List<ContentReference>();
 
-            if (!ContentReference.IsNullOrEmpty(currentPage.PageFolder))
-                dependentContentItems.AddRange(GetDescendentsOfType<PageData>(currentPage.PageFolder));
+            if (!ContentReference.IsNullOrEmpty(feedPage.PageFolder))
+                dependentContentItems.AddRange(GetDescendentsOfType<PageData>(feedPage.PageFolder));
 
-            if (!ContentReference.IsNullOrEmpty(currentPage.BlockFolder))
-                dependentContentItems.AddRange(GetDescendentsOfType<BlockData>(currentPage.BlockFolder));
+            if (!ContentReference.IsNullOrEmpty(feedPage.BlockFolder))
+                dependentContentItems.AddRange(GetDescendentsOfType<BlockData>(feedPage.BlockFolder));
 
-            if (!ContentReference.IsNullOrEmpty(currentPage.MediaFolder))
-                dependentContentItems.AddRange(GetDescendentsOfType<MediaData>(currentPage.MediaFolder));
+            if (!ContentReference.IsNullOrEmpty(feedPage.MediaFolder))
+                dependentContentItems.AddRange(GetDescendentsOfType<MediaData>(feedPage.MediaFolder));
 
-            if (currentPage.ContentItems == null)
+            if (feedPage.ContentItems == null)
                 return dependentContentItems;
 
-            var itemsInContentArea = currentPage.ContentItems.Items.Select(contentItem => contentItem.ContentLink);
+            var itemsInContentArea = feedPage.ContentItems.Items.Select(contentItem => contentItem.ContentLink);
             dependentContentItems.AddRange(itemsInContentArea);
 
             return dependentContentItems.Distinct();

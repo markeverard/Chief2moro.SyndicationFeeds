@@ -56,6 +56,14 @@ namespace Chief2moro.SyndicationFeeds.Models
         public virtual string BlockRenderingTag { get; set; }
 
         [Display(
+           Name = "Cache feed (in seconds)",
+           Description = "Sets length of time the feed will be cached for. This will improve performance but limit the time until new items will appear in the syndication feed",
+           GroupName = FeedPageTypeTabNames.FeedSettings,
+           Order = 40)]
+        [Range(0, int.MaxValue)]
+        public virtual int CacheFeedforSeconds { get; set; }
+
+        [Display(
             Name = "Content items",
             Description = "Any content items added to this content area will be displayed in the feed",
             GroupName = FeedPageTypeTabNames.Content,
@@ -104,6 +112,7 @@ namespace Chief2moro.SyndicationFeeds.Models
         {
             base.SetDefaultValues(contentType);
             MaximumItems = 50;
+            CacheFeedforSeconds = 0;
         }
     }
 }
