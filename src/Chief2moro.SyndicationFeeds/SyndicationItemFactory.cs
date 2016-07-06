@@ -15,17 +15,23 @@ namespace Chief2moro.SyndicationFeeds
     public class SyndicationItemFactory
     {
         protected IContentLoader ContentLoader;
+
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
-        protected IFeedDescriptionProvider FeedDescriptionProvider;
+        protected IItemDescriptionProvider ItemDescriptionProvider;
+        protected IItemModifier ItemModifier;
+
         protected SyndicationFeedContext FeedContext;
       
-        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedFilterer, IFeedDescriptionProvider feedDescriptionProvider, SyndicationFeedContext feedContext)
+        public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, 
+                                        IFeedContentFilterer feedFilterer, IItemDescriptionProvider itemDescriptionProvider,
+                                        IItemModifier itemModifier, SyndicationFeedContext feedContext)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
             FeedFilterer = feedFilterer ?? new FeedContentFilterer();
-            FeedDescriptionProvider = feedDescriptionProvider ?? new FeedDescriptionProvider();
+            ItemDescriptionProvider = itemDescriptionProvider ?? new ItemDescriptionProvider();
+            ItemModifier = itemModifier ?? new ItemNullModifier();
             FeedContext = feedContext;
         }
 
@@ -60,7 +66,7 @@ namespace Chief2moro.SyndicationFeeds
             var item = new SyndicationItem
             {
                 Title = new TextSyndicationContent(content.Name),
-                Summary = new TextSyndicationContent(FeedDescriptionProvider.ItemDescripton(content)),
+                Summary = new TextSyndicationContent(ItemDescriptionProvider.ItemDescripton(content)),
                 LastUpdatedTime = changed
             };
 
@@ -87,7 +93,10 @@ namespace Chief2moro.SyndicationFeeds
             item.Content = new UrlSyndicationContent(url, mimeType);
             item.AddPermalink(url);
             item.Authors.Add(new SyndicationPerson(string.Empty, changedby, string.Empty));
-            
+
+            item = ItemModifier.Modify(item, content);
+
+
             return item;
         }
 

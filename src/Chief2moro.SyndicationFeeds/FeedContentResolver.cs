@@ -3,12 +3,14 @@ using System.Linq;
 using Chief2moro.SyndicationFeeds.Models;
 using EPiServer;
 using EPiServer.Core;
+using EPiServer.ServiceLocation;
 
 namespace Chief2moro.SyndicationFeeds
 {
     /// <summary>
     /// Responsible for collating all content references set on the given SyndicationFeedPage
     /// </summary>
+    [ServiceConfiguration(ServiceType = typeof(IFeedContentResolver), Lifecycle = ServiceInstanceScope.HttpContext)]
     public class FeedContentResolver : IFeedContentResolver
     {
         protected IContentLoader ContentLoader;

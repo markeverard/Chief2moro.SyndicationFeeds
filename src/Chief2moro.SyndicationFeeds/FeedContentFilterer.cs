@@ -9,6 +9,7 @@ using EPiServer.ServiceLocation;
 
 namespace Chief2moro.SyndicationFeeds
 {
+    [ServiceConfiguration(ServiceType = typeof(IFeedContentFilterer), Lifecycle = ServiceInstanceScope.HttpContext)]
     public class FeedContentFilterer : IFeedContentFilterer
     {
         public virtual IEnumerable<IContent> FilterSyndicationContent(IEnumerable<IContent> syndicationContentItems, SyndicationFeedContext feedContext)
