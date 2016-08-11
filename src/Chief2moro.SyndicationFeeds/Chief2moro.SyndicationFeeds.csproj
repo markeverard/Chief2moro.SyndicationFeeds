@@ -198,10 +198,8 @@
     <Compile Include="FeedContentFilterer.cs" />
     <Compile Include="FeedContentResolver.cs" />
     <Compile Include="ItemNullModifier.cs" />
-    <Compile Include="ItemDescriptionProvider.cs" />
     <Compile Include="IFeedContentFilterer.cs" />
     <Compile Include="IItemModifier.cs" />
-    <Compile Include="IItemDescriptionProvider.cs" />
     <Compile Include="Editor\EnumEditorDescriptor.cs" />
     <Compile Include="Editor\EnumSelectionFactory%27T.cs" />
     <Compile Include="FeedFormat.cs" />
