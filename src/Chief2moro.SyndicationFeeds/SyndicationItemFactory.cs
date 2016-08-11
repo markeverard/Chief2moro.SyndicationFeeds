@@ -18,19 +18,17 @@ namespace Chief2moro.SyndicationFeeds
 
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
-        protected IItemDescriptionProvider ItemDescriptionProvider;
         protected IItemModifier ItemModifier;
 
         protected SyndicationFeedContext FeedContext;
       
         public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, 
-                                        IFeedContentFilterer feedFilterer, IItemDescriptionProvider itemDescriptionProvider,
+                                        IFeedContentFilterer feedFilterer,
                                         IItemModifier itemModifier, SyndicationFeedContext feedContext)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
             FeedFilterer = feedFilterer ?? new FeedContentFilterer();
-            ItemDescriptionProvider = itemDescriptionProvider ?? new ItemDescriptionProvider();
             ItemModifier = itemModifier ?? new ItemNullModifier();
             FeedContext = feedContext;
         }
@@ -66,7 +64,7 @@ namespace Chief2moro.SyndicationFeeds
             var item = new SyndicationItem
             {
                 Title = new TextSyndicationContent(content.Name),
-                Summary = new TextSyndicationContent(ItemDescriptionProvider.ItemDescripton(content)),
+                Summary = new TextSyndicationContent(string.Format("An src link to content with id = '{0}' and name = '{1}'", content.ContentLink.ID, content.Name)),
                 LastUpdatedTime = changed
             };
 
