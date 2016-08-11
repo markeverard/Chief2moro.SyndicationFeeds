@@ -46,7 +46,7 @@ namespace Chief2moro.SyndicationFeeds
             var filteredItems = FeedFilterer.FilterSyndicationContent(contentItems, FeedContext);
             var syndicationItems = filteredItems.Select(CreateSyndicationItem).ToList();
 
-            return syndicationItems.OrderByDescending(c => c.LastUpdatedTime).Take(FeedContext.FeedPageType.MaximumItems);
+            return syndicationItems.OrderByDescending(c => c.PublishDate).Take(FeedContext.FeedPageType.MaximumItems);
         }
 
         private SyndicationItem CreateSyndicationItem(IContent content)
