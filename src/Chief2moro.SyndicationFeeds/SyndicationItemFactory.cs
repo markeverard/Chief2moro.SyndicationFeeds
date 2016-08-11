@@ -18,19 +18,17 @@ namespace Chief2moro.SyndicationFeeds
 
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
-        protected IItemDescriptionProvider ItemDescriptionProvider;
         protected IItemModifier ItemModifier;
 
         protected SyndicationFeedContext FeedContext;
       
         public SyndicationItemFactory(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, 
-                                        IFeedContentFilterer feedFilterer, IItemDescriptionProvider itemDescriptionProvider,
+                                        IFeedContentFilterer feedFilterer,
                                         IItemModifier itemModifier, SyndicationFeedContext feedContext)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver ?? new FeedContentResolver(ContentLoader);
             FeedFilterer = feedFilterer ?? new FeedContentFilterer();
-            ItemDescriptionProvider = itemDescriptionProvider ?? new ItemDescriptionProvider();
             ItemModifier = itemModifier ?? new ItemNullModifier();
             FeedContext = feedContext;
         }
@@ -46,7 +44,7 @@ namespace Chief2moro.SyndicationFeeds
             var filteredItems = FeedFilterer.FilterSyndicationContent(contentItems, FeedContext);
             var syndicationItems = filteredItems.Select(CreateSyndicationItem).ToList();
 
-            return syndicationItems.OrderByDescending(c => c.LastUpdatedTime).Take(FeedContext.FeedPageType.MaximumItems);
+            return syndicationItems.OrderByDescending(c => c.PublishDate).Take(FeedContext.FeedPageType.MaximumItems);
         }
 
         private SyndicationItem CreateSyndicationItem(IContent content)
@@ -66,7 +64,7 @@ namespace Chief2moro.SyndicationFeeds
             var item = new SyndicationItem
             {
                 Title = new TextSyndicationContent(content.Name),
-                Summary = new TextSyndicationContent(ItemDescriptionProvider.ItemDescripton(content)),
+                Summary = new TextSyndicationContent(string.Format("An src link to content with id = '{0}' and name = '{1}'", content.ContentLink.ID, content.Name)),
                 LastUpdatedTime = changed
             };
 
@@ -95,7 +93,6 @@ namespace Chief2moro.SyndicationFeeds
             item.Authors.Add(new SyndicationPerson(string.Empty, changedby, string.Empty));
 
             item = ItemModifier.Modify(item, content);
-
 
             return item;
         }

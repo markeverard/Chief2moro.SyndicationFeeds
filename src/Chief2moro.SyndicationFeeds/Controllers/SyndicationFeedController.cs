@@ -21,9 +21,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
         protected IContentLoader ContentLoader;
         protected IFeedContentResolver FeedContentResolver;
         protected IFeedContentFilterer FeedFilterer;
-        protected IItemDescriptionProvider ItemDescriptionProvider;
         protected IItemModifier ItemModifier;
-
 
         public SyndicationFeedController()
         {
@@ -31,18 +29,16 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             FeedContentResolver = ServiceLocator.Current.GetInstance<IFeedContentResolver>();
             FeedFilterer = ServiceLocator.Current.GetInstance<IFeedContentFilterer>();
 
-            ItemDescriptionProvider = ServiceLocator.Current.GetInstance<IItemDescriptionProvider>();
             ItemModifier = ServiceLocator.Current.GetInstance<IItemModifier>();
 
             CatRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
         }
 
-        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer, IItemDescriptionProvider itemDescriptionProvider, IItemModifier itemModifier, CategoryRepository categoryRepository)
+        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer, IItemModifier itemModifier, CategoryRepository categoryRepository)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver;
             FeedFilterer = feedContentFilterer;
-            ItemDescriptionProvider = itemDescriptionProvider;
             ItemModifier = itemModifier;
             CatRepository = categoryRepository;
         }
@@ -55,7 +51,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             var siteUrl = SiteDefinition.Current.SiteUrl.ToString().TrimEnd('/');
             var currentUri = new Uri(siteUrl + UrlResolver.Current.GetUrl(currentPage.ContentLink));
 
-            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, ItemDescriptionProvider, ItemModifier, feedContext);
+            var syndicationFactory = new SyndicationItemFactory(ContentLoader, FeedContentResolver, FeedFilterer, ItemModifier, feedContext);
 
             var items = GetFromCacheOrFactory(syndicationFactory, currentPage, parsedCategories);
             
