@@ -12,6 +12,7 @@ using EPiServer.Web.Routing;
 using System.Collections.Generic;
 using EPiServer.Framework.Cache;
 using System;
+using EPiServer.Security;
 
 namespace Chief2moro.SyndicationFeeds.Controllers
 {
@@ -138,7 +139,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             {
                 cachedItems = syndicationFactory.GetSyndicationItems();
 
-                if (cacheTime > 0)
+                if (cacheTime > 0 && !PrincipalInfo.HasEditorAccess)
                 {
                     var cachePolicy = new CacheEvictionPolicy(new[] { DataFactoryCache.PageCommonCacheKey(currentPage.ContentLink) }
                                                             , new TimeSpan(0, 0, cacheTime),
