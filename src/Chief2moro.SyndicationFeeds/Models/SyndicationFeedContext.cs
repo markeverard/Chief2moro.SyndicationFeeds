@@ -9,13 +9,17 @@ namespace Chief2moro.SyndicationFeeds.Models
         public SyndicationFeedContext(SyndicationFeedPageType feedPageType)
         {
             FeedPageType = feedPageType;
-            CategoriesFilter = feedPageType.CategoryFilter.CreateWritableClone() ?? new CategoryList();
+            CategoriesFilter = feedPageType.CategoryFilter != null 
+                ? feedPageType.CategoryFilter.CreateWritableClone() 
+                : new CategoryList();
         }
 
         public SyndicationFeedContext(SyndicationFeedPageType feedPageType, List<Category> categoriesFilter)
         {
             FeedPageType = feedPageType;
-            CategoriesFilter = feedPageType.CategoryFilter.CreateWritableClone() ?? new CategoryList();
+            CategoriesFilter = feedPageType.CategoryFilter != null
+               ? feedPageType.CategoryFilter.CreateWritableClone()
+               : new CategoryList();
             
             AddContextCategories(categoriesFilter);                    
         }
