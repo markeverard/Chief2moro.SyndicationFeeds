@@ -23,6 +23,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
         protected IFeedContentFilterer FeedFilterer;
         protected IItemDescriptionProvider ItemDescriptionProvider;
         protected IItemModifier ItemModifier;
+        protected IContentCacheKeyCreator CacheKeyCreator;
 
 
         public SyndicationFeedController()
@@ -35,9 +36,10 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             ItemModifier = ServiceLocator.Current.GetInstance<IItemModifier>();
 
             CatRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
+            CacheKeyCreator = ServiceLocator.Current.GetInstance<IContentCacheKeyCreator>();
         }
 
-        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer, IItemDescriptionProvider itemDescriptionProvider, IItemModifier itemModifier, CategoryRepository categoryRepository)
+        public SyndicationFeedController(IContentLoader contentLoader, IFeedContentResolver feedContentResolver, IFeedContentFilterer feedContentFilterer, IItemDescriptionProvider itemDescriptionProvider, IItemModifier itemModifier, CategoryRepository categoryRepository, IContentCacheKeyCreator cacheKeyCreator)
         {
             ContentLoader = contentLoader;
             FeedContentResolver = feedContentResolver;
@@ -45,6 +47,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
             ItemDescriptionProvider = itemDescriptionProvider;
             ItemModifier = itemModifier;
             CatRepository = categoryRepository;
+            CacheKeyCreator = cacheKeyCreator;
         }
 
         public ActionResult Index(SyndicationFeedPageType currentPage, string categories)
@@ -65,7 +68,7 @@ namespace Chief2moro.SyndicationFeeds.Controllers
                 Id = siteUrl + UrlResolver.Current.GetUrl(ContentReference.StartPage),         
                 Title = new TextSyndicationContent(currentPage.PageName),
                 Description = new TextSyndicationContent(currentPage.Description),
-                Language = currentPage.LanguageBranch,
+                Language = currentPage.Language.TwoLetterISOLanguageName,
                 Generator = "http://nuget.episerver.com/en/OtherPages/Package/?packageId=Chief2moro.SyndicationFeeds"
             };
 
@@ -128,14 +131,14 @@ namespace Chief2moro.SyndicationFeeds.Controllers
         private IEnumerable<SyndicationItem> GetFromCacheOrFactory(SyndicationItemFactory syndicationFactory, SyndicationFeedPageType currentPage, IEnumerable<Category> parsedCategories)
         {
             var cacheTime = currentPage.CacheFeedforSeconds;
-
+           
             string categoryQuery = string.Empty;
             foreach (var category in parsedCategories)
             {
                 categoryQuery += category.Name;
             }
 
-            var cacheKey = string.Format("SyndicationFeedPageType_{0}_{1}", currentPage.ContentLink.ToString(), categoryQuery);
+            var cacheKey = string.Format("SyndicationFeedPageType_{0}_{1}", currentPage.ContentLink, categoryQuery);
 
             var cachedItems = CacheManager.Get(cacheKey) as IEnumerable<SyndicationItem>;
             if (cachedItems == null)
@@ -144,9 +147,9 @@ namespace Chief2moro.SyndicationFeeds.Controllers
 
                 if (cacheTime > 0)
                 {
-                    var cachePolicy = new CacheEvictionPolicy(new[] { DataFactoryCache.PageCommonCacheKey(currentPage.ContentLink) }
-                                                            , new TimeSpan(0, 0, cacheTime),
-                                                            CacheTimeoutType.Absolute);
+                    var cachePolicy = new CacheEvictionPolicy(new TimeSpan(0, 0, cacheTime),
+                                                                CacheTimeoutType.Absolute, 
+                                                                new [] { CacheKeyCreator.CreateVersionCacheKey(currentPage.ContentLink) });
 
                     CacheManager.Insert(cacheKey, syndicationFactory.GetSyndicationItems(), cachePolicy);
                 }

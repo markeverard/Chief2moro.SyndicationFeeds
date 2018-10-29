@@ -7,7 +7,7 @@ using EPiServer.Shell.ObjectEditing;
 
 namespace Chief2moro.SyndicationFeeds.Editor
 {
-    public class ContentTypeSelectionFactory : ISelectionFactory
+    public class ContentTypeSelectionFactory : ISelectionFactory 
     {
         public Injected<IContentTypeRepository> _typeRepository;
  

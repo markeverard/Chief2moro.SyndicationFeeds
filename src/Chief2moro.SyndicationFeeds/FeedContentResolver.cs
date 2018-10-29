@@ -23,7 +23,7 @@ namespace Chief2moro.SyndicationFeeds
         /// <summary>
         /// Gets the content items that are referenced in the passed SyndicationFeedPage.
         /// </summary>
-        /// <param name="currentPage">The current page.</param>
+        /// <param name="feedContext">The context of the feed inclusing the current page.</param>
         /// <returns></returns>
         public IEnumerable<ContentReference> GetContentReferences(SyndicationFeedContext feedContext)
         {

@@ -77,7 +77,7 @@ namespace Chief2moro.SyndicationFeeds.Models
             Order = 20)]
         public virtual ContentReference PageFolder { get; set; }
 
-        [UIHint(UIHint.MediaFolder)]
+        [UIHint(UIHint.AssetsFolder)]
         [Display(
             Name = "Media folder items",
             Description = "Selecting a media folder will add all media saved within that folder to the content feed",
@@ -85,7 +85,7 @@ namespace Chief2moro.SyndicationFeeds.Models
             Order = 30)]
         public virtual ContentReference MediaFolder { get; set; }
 
-        [UIHint(UIHint.BlockFolder)]
+        [UIHint(UIHint.AssetsFolder)]
         [Display(
             Name = "Block folder items",
             Description = "Selecting a block folder will add all blocks saved within that folder to the content feed",
